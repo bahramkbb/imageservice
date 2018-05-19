@@ -1,0 +1,11 @@
+# start with a scratch (no layers)
+FROM scratch
+
+# copy our static linked library
+COPY ImageService ImageService
+
+# tell we are exposing our service on port 9000
+EXPOSE 9000
+
+# run it!
+ENTRYPOINT ["./ImageService"]
