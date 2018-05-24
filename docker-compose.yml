@@ -1,0 +1,23 @@
+version: "3"
+services:
+  web:
+    image: bahramkb/imageservice:current
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 200M
+      restart_policy:
+        condition: on-failure
+    environment:
+      - IMAGE_ROOT_PATH=/image
+    ports:
+      - "9000:9000"
+    volumes:
+      - /image:/image
+    networks:
+      - webnet
+
+networks:
+  webnet:
