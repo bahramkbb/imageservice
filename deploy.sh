@@ -1,12 +1,13 @@
 #!/bin/bash
 
-ssh -A deploy@172.25.30.46 '/bin/bash -s' << EOF
+echo 'Please enter server IP address:'
+read MASTER_IP
+
+ssh -A deploy@$MASTER_IP /bin/bash << EOF
 docker pull bahramkb/imageservice:latest
-docker rmi bahramkb/imageservice:current || true
-docker tag bahramkb/imageservice:latest bahramkb/imageservice:current
 mkdir ~/swarm || true
 cd ~/swarm
-echo 'yes\n' | git clone git@github.com:bahramkarimi/imageservice.git ||
+echo 'yes\n' | git clone git@github.com:bahramkarimi/imageservice.git || true
 cd imageservice
 git pull || true
 docker stack deploy -c docker-compose.yml imageservice

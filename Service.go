@@ -20,7 +20,7 @@ func main() {
 	http.HandleFunc("/b/", brandImageHandler)
 	http.HandleFunc("/p/", productImageHandler)
 
-	//http.Handle("/", http.FileServer(http.Dir(*root)))
+	//http.Handle("/", http.FileServer(http.Dir(*root))) wow
 
 	log.Println("Listening on 9000")
 	//Serving HTTP
