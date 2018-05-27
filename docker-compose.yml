@@ -3,11 +3,11 @@ services:
   web:
     image: bahramkb/imageservice:latest
     deploy:
-      replicas: 5
+      replicas: 4
       resources:
         limits:
           cpus: "0.2"
-          memory: 200M
+          memory: 500M
       restart_policy:
         condition: on-failure
     environment:
