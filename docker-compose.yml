@@ -11,7 +11,7 @@ services:
       restart_policy:
         condition: on-failure
     environment:
-      - IMAGE_ROOT_PATH=/image
+      - IMAGE_ROOT_PATH=/image/
     ports:
       - "9000:9000"
     volumes:
