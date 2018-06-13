@@ -19,17 +19,25 @@ var imageRoot string = os.Getenv("IMAGE_ROOT_PATH")
 func main() {
 	http.HandleFunc("/b/", brandImageHandler)
 	http.HandleFunc("/p/", productImageHandler)
+	http.Handle("/*filepath", http.FileServer(http.Dir(imageRoot)))
 
 	//http.Handle("/", http.FileServer(http.Dir(*root))) wow
 
 	log.Println("Listening on 9000")
 	//Serving HTTP
-	err := http.ListenAndServe(":9000", nil)
+	//err := http.ListenAndServe(":9000", nil)
 	//Serving HTTPS
-	//err := http.ListenAndServeTLS(":9000", "/etc/nginx/ssl/certificates.pem", "/etc/nginx/ssl/private.key", nil)
+	err := http.ListenAndServeTLS(":9000", "/cert/certificates.pem", "/cert/private.key", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
+}
+
+func directoryBrowsingBlockerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
 }
 
 func brandImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +72,13 @@ func productImageHandler(w http.ResponseWriter, r *http.Request) {
 			height uint
 		)
 		width, height = getImageSize(match[4])
-		imagePath := fmt.Sprintf("%vproduct/%v/%v/%v.jpg", imageRoot, match[1], match[2], match[3])
+		var imagePath string = ""
+		if match[3] == "" {
+			imagePath = fmt.Sprintf("%vproduct/%v/%v/%v.jpg", imageRoot, match[1], match[2], match[4])
+		} else {
+			imagePath = fmt.Sprintf("%vproduct/%v/%v/%v.jpg", imageRoot, match[1], match[2], match[3])
+		}
+		log.Println("Image path to handle: " + imagePath)
 		img, err := resizeImage(imagePath, width, height)
 		if err != nil {
 			returnErrorMessageToBrowser(w, r, http.StatusNotFound)
@@ -139,6 +153,9 @@ func getImageSize(imgType string) (width, height uint) {
 	case "brand":
 		width = 100
 		height = 80
+	case "sprite":
+		width = 704
+		height = 220
 	default:
 		width = 35
 		height = 44

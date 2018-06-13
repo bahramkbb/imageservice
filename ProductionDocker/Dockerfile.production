@@ -3,6 +3,7 @@ FROM scratch
 
 # copy our static linked library
 COPY ImageService ImageService
+COPY cert cert
 
 # tell we are exposing our service on port 9000
 EXPOSE 9000
